@@ -32,6 +32,7 @@ public interface FeatureMap<K, V>
 }
 ```
 
+***NOTE: The interface supports iterative refinement of a FeatureMap, however, at present, all implementations return a FeatureMapSimple which has linear complexity*** 
 
 ### Implementations
 The following implementations exist:
