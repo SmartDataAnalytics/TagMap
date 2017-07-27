@@ -1,7 +1,6 @@
 package org.aksw.commons.collections.set_trie;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,14 +12,10 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -37,9 +32,9 @@ import java.util.stream.Stream;
  */
 public class SetTrie<K, V> {
 
-    protected class Node
+    protected class SetTrieNode
     {
-        public Node(long id, Node parent, V currentValue) {
+        public SetTrieNode(long id, SetTrieNode parent, V currentValue) {
             super();
             this.id = id;
             this.parent = parent;
@@ -48,17 +43,17 @@ public class SetTrie<K, V> {
         }
 
         protected long id;
-        Node parent;
+        SetTrieNode parent;
         V currentValue;
-        NavigableMap<V, Node> nextValueToChild;
-        Map<K, SortedSet<V>> keyToSet;
+        NavigableMap<V, SetTrieNode> nextValueToChild;
+        Map<K, NavigableSet<V>> keyToSet;
 
 
         @Override
         public String toString() {
-            Node c = this;
+            SetTrieNode c = this;
             List<V> vs = new ArrayList<>();
-            while(c != rootNode) {
+            while(c != superRootNode) {
                 vs.add(c.currentValue);
                 c = c.parent;
             }
@@ -71,29 +66,34 @@ public class SetTrie<K, V> {
     protected Comparator<? super V> comparator;
 
     // Mapping from key to node - used for fast removal
-    protected Map<K, Node> keyToNode = new HashMap<>();
+    protected Map<K, SetTrieNode> keyToNode = new HashMap<>();
 
     // An id counter for human readable node ids - may be useful for debugging / logging
     protected long nextId = 0;
 
     // Root node of the trie datastructure
-    protected Node rootNode = new Node(nextId++, null, null);
+    protected SetTrieNode superRootNode = new SetTrieNode(nextId++, null, null);
 
-    public void put(K key, Collection<V> set) {
+
+    // TODO We may want to allow views on the Trie
+    // HashSet (using a HashMap for self-containedness of the implementation) of current root nodes
+    // protected Map<SetTrieNode, Void> rootNodes = new IdentityHashMap<>();
+
+    public Set<V> put(K key, Collection<V> set) {
         // Remove any possibly existing prior association with the key
-        remove(key);
+        Set<V> result = remove(key);
 
-        NavigableSet<V> navSet = new TreeSet<V>(comparator);
-        navSet.addAll(set);
-        Iterator<V> it = set.iterator();
+        // Note: The second argument (true) does not matter as there cannot be any type errors
+        NavigableSet<V> navSet = createNavigableSet(set, true);
+        Iterator<V> it = navSet.iterator();
 
-        Node currentNode = rootNode;
+        SetTrieNode currentNode = superRootNode;
         while(it.hasNext()) {
             V v = it.next();
 
-            Node nextNode = currentNode.nextValueToChild == null ? null : currentNode.nextValueToChild.get(v);
+            SetTrieNode nextNode = currentNode.nextValueToChild == null ? null : currentNode.nextValueToChild.get(v);
             if(nextNode == null) {
-                nextNode = new Node(nextId++, currentNode, v);
+                nextNode = new SetTrieNode(nextId++, currentNode, v);
                 if(currentNode.nextValueToChild == null) {
                     currentNode.nextValueToChild = new TreeMap<>();
                 }
@@ -109,13 +109,17 @@ public class SetTrie<K, V> {
         currentNode.keyToSet.put(key, navSet);
 
         keyToNode.put(key, currentNode);
+
+        return result;
     }
 
-    public void remove(Object key) {
-        Node currentNode = keyToNode.get(key);
+    public Set<V> remove(Object key) {
+        Set<V> result = null;
+
+        SetTrieNode currentNode = keyToNode.get(key);
 
         if(currentNode != null) {
-            currentNode.keyToSet.remove(key);
+            result = currentNode.keyToSet.remove(key);
             if(currentNode.keyToSet.isEmpty()) {
                 currentNode.keyToSet = null;
             }
@@ -133,39 +137,65 @@ public class SetTrie<K, V> {
                 currentNode = null;
             }
         }
+
+        return result;
     }
 
-    public Map<K, SortedSet<V>> getAllSubsetsOf(Collection<V> set) {
-        SortedSet<V> navSet = new TreeSet<V>(comparator);
-        navSet.addAll(set);
-        Iterator<V> it = set.iterator();
+    public NavigableSet<V> createNavigableSet(Collection<?> set, boolean skipTypeErrors) {
+        NavigableSet<V> result = new TreeSet<V>(comparator);
 
-        List<Node> frontier = new ArrayList<>();
-        frontier.add(rootNode);
-
-        List<Node> nextNodes = new ArrayList<>();
-
-        // For every value, extend the frontier with the successor nodes for that value.
-        while(it.hasNext()) {
-            V v = it.next();
-
-            nextNodes.clear();
-            for(Node currentNode : frontier) {
-                Node nextNode = currentNode.nextValueToChild == null ? null : currentNode.nextValueToChild.get(v);
-                if(nextNode != null) {
-                    nextNodes.add(nextNode);
+        for(Object o : set) {
+            try {
+                V v = (V)o;
+                result.add(v);
+            } catch(Exception e) {
+                if(!skipTypeErrors) {
+                    result = null;
+                    break;
                 }
             }
-            frontier.addAll(nextNodes);
         }
 
-        Map<K, SortedSet<V>> result = new HashMap<>();
+        return result;
+    }
 
-        // Copy all data entries associated with the frontier to the result
-        for(Node currentNode : frontier) {
-            if(currentNode.keyToSet != null) {
-                for(Entry<K, SortedSet<V>> e : currentNode.keyToSet.entrySet()) {
-                    result.put(e.getKey(), e.getValue());
+    public Map<K, Set<V>> getAllSubsetsOf(Collection<?> set) {
+        Set<V> navSet = createNavigableSet(set, false);
+
+        Map<K, Set<V>> result = new HashMap<>();
+
+        if(navSet == null) {
+            // Set creation failed due to at least one item having an incorrect datatype.
+            // Hence, there cannot be any superset
+        } else {
+            Iterator<V> it = navSet.iterator();
+
+            List<SetTrieNode> frontier = new ArrayList<>();
+            frontier.add(superRootNode);
+
+            List<SetTrieNode> nextNodes = new ArrayList<>();
+
+            // For every value, extend the frontier with the successor nodes for that value.
+            while(it.hasNext()) {
+                Object v = it.next();
+
+                nextNodes.clear();
+                for(SetTrieNode currentNode : frontier) {
+                    SetTrieNode nextNode = currentNode.nextValueToChild == null ? null : currentNode.nextValueToChild.get(v);
+                    if(nextNode != null) {
+                        nextNodes.add(nextNode);
+                    }
+                }
+                frontier.addAll(nextNodes);
+            }
+
+
+            // Copy all data entries associated with the frontier to the result
+            for(SetTrieNode currentNode : frontier) {
+                if(currentNode.keyToSet != null) {
+                    for(Entry<K, NavigableSet<V>> e : currentNode.keyToSet.entrySet()) {
+                        result.put(e.getKey(), e.getValue());
+                    }
                 }
             }
         }
@@ -176,14 +206,14 @@ public class SetTrie<K, V> {
 
 
 
-    public Map<K, SortedSet<V>> getAllSupersetsOf(Collection<V> set) {
-        Set<V> navSet = new TreeSet<V>(comparator);
-        navSet.addAll(set);
-        Iterator<V> it = set.iterator();
+    public Map<K, Set<V>> getAllSupersetsOf(Collection<?> set) {
+        // Skip elements in the collection having an incorrect type, as we are looking for subsets which simply
+        // cannot contain the conflicting items
+        Set<V> navSet = createNavigableSet(set, true);
+        Iterator<V> it = navSet.iterator();
 
-
-        List<Node> frontier = new ArrayList<>();
-        frontier.add(rootNode);
+        List<SetTrieNode> frontier = new ArrayList<>();
+        frontier.add(superRootNode);
 
         // For every value, extend the frontier with the successor nodes for that value.
         V from = null;
@@ -195,21 +225,21 @@ public class SetTrie<K, V> {
             from = upto;
             upto = it.next();
 
-            List<Node> nextNodes = new ArrayList<>();
+            List<SetTrieNode> nextNodes = new ArrayList<>();
 
             // Based on the frontier, we need to keep scanning nodes whose values is in the range [from, upto]
             // until we find the nodes whose values equals upto
             // Only these nodes then constitute the next frontier
-            Collection<Node> currentScanNodes = frontier;
+            Collection<SetTrieNode> currentScanNodes = frontier;
             do {
-                Collection<Node> nextScanNodes = new ArrayList<>();
-                for(Node currentNode : currentScanNodes) {
+                Collection<SetTrieNode> nextScanNodes = new ArrayList<>();
+                for(SetTrieNode currentNode : currentScanNodes) {
                     if(currentNode.nextValueToChild != null) {
-                        NavigableMap<V, Node> candidateNodes = isLeastFrom
+                        NavigableMap<V, SetTrieNode> candidateNodes = isLeastFrom
                                 ? currentNode.nextValueToChild.headMap(upto, true)
                                 : currentNode.nextValueToChild.subMap(from, true, upto, true);
 
-                        for(Node candidateNode : candidateNodes.values()) {
+                        for(SetTrieNode candidateNode : candidateNodes.values()) {
                             if(Objects.equals(candidateNode.currentValue, upto)) {
                                 nextNodes.add(candidateNode);
                             } else {
@@ -226,16 +256,16 @@ public class SetTrie<K, V> {
             isLeastFrom = false;
         }
 
-        Map<K, SortedSet<V>> result = new HashMap<>();
+        Map<K, Set<V>> result = new HashMap<>();
 
         // Copy all data entries associated with the frontier to the result
         frontier.stream()
             .flatMap(node -> reachableNodesAcyclic(
                         node,
-                        x -> (x.nextValueToChild != null ? x.nextValueToChild.values() : Collections.<Node>emptySet()).stream()))
+                        x -> (x.nextValueToChild != null ? x.nextValueToChild.values() : Collections.<SetTrieNode>emptySet()).stream()))
             .forEach(currentNode -> {
                 if(currentNode.keyToSet != null) {
-                    for(Entry<K, SortedSet<V>> e : currentNode.keyToSet.entrySet()) {
+                    for(Entry<K, NavigableSet<V>> e : currentNode.keyToSet.entrySet()) {
                         result.put(e.getKey(), e.getValue());
                     }
                 }
