@@ -41,11 +41,11 @@ public class SetTrieTests {
         fm.put("c", Sets.newHashSet(2, 3, 4));
 
         System.out.println("Subsets 1");
-        fm.getAllSubsetsOf(Arrays.asList(1, 2, 3))
+        fm.getAllSubsetsOf(Arrays.asList(1, 2, 3), false)
             .entrySet().forEach(e -> System.out.println("" + e));
 
         System.out.println("Supersets 1");
-        fm.getAllSupersetsOf(Arrays.asList(1, 4))
+        fm.getAllSupersetsOf(Arrays.asList(1, 4), false)
             .entrySet().forEach(e -> System.out.println("" + e));
     }
 }

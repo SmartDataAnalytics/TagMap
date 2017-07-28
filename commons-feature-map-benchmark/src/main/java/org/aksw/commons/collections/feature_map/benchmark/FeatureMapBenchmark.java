@@ -82,7 +82,7 @@ public class FeatureMapBenchmark {
 
 
         BiConsumer<Resource, Set<?>> performLookup = (r, set) -> {
-            int lookupSize = BenchmarkTime.benchmark(r, () -> featureMap.getAllSubsetsOf(set).size());
+            int lookupSize = BenchmarkTime.benchmark(r, () -> featureMap.getAllSubsetsOf(set, false).size());
             r.addLiteral(LSQ.resultSize, lookupSize);
         };
 
