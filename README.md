@@ -17,37 +17,37 @@ The artifact is published on [Maven Central](http://search.maven.org/#search%7Cg
 ## Usage
 
 ### The interface
-The project introduces the [FeatureMap]() interface with the following important properties:
+The project introduces the [TagMap]() interface with the following important properties:
 
-* At the core it is a `Map` which associates keys with sets of "features".
-* It enhances the `Map` with methods for retrieving keys by subsets and supersets of features. 
+* At the core it is a `Map` which associates keys with sets of "tags".
+* It enhances the `Map` with methods for retrieving keys by subsets and supersets of tags. 
 
 
 ```java
-public interface FeatureMap<K, V>
+public interface TagMap<K, V>
     extends Map<K, Set<V>>
 {
-    FeatureMap<K, V> getAllSubsetsOf(Collection<?> set);
-    FeatureMap<K, V> getAllSupersetsOf(Collection<?> set);
+    TagMap<K, V> getAllSubsetsOf(Collection<?> set);
+    TagMap<K, V> getAllSupersetsOf(Collection<?> set);
 }
 ```
 
-***NOTE: The interface supports iterative refinement of a FeatureMap, however, at present, all implementations return a FeatureMapSimple which has linear complexity*** 
+***NOTE: The interface supports iterative refinement of a TagMap, however, at present, all implementations return a TagMapSimple which has linear complexity*** 
 
 ### Implementations
 The following implementations exist:
-* [FeatureMapSimple](): A basic implementation which is backed by a standard `Map` and implements the sub-/superset queries by means of sequential scans
-* [FeatureMapInvertedIndex](): An implementation which internally tracks for every feature the set of keys it is associated with.
-* [FeatureMapSetTrie](): An implementation of the Set Trie datastructure proposed by Iztok Savnik.
+* [TagMapSimple](): A basic implementation which is backed by a standard `Map` and implements the sub-/superset queries by means of sequential scans
+* [TagMapInvertedIndex](): An implementation which internally tracks for every tag the set of keys it is associated with.
+* [TagMapSetTrie](): An implementation of the Set Trie datastructure proposed by Iztok Savnik.
 * For validation, we provide a util function in [ValidationUtils]() which creates a Java proxy which delegates each method invocation to two implementations, compares the return values for equality, and raises an exception if they differ.
 
 
 ```java
-FeatureMap<String, Integer> simpleFm = new FeatureMapSimple<>();
-FeatureMap<String, Integer> setTrieFm = new FeatureMapSetTrie<>();
-FeatureMap<String, Integer> invertedListFm = new FeatureMapInvertedIndex<>();
+TagMap<String, Integer> simpleFm = new TagMapSimple<>();
+TagMap<String, Integer> setTrieFm = new TagMapSetTrie<>();
+TagMap<String, Integer> invertedListFm = new TagMapInvertedIndex<>();
 
-FeatureMap<String, Integer> fm = ValidationUtils.createValidatingProxy(setTrieFm, simpleFm);
+TagMap<String, Integer> fm = ValidationUtils.createValidatingProxy(setTrieFm, simpleFm);
 
 fm.put("a", Sets.newHashSet(1, 2, 3));
 fm.put("b", Sets.newHashSet(1, 2, 4));
