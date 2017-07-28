@@ -42,7 +42,7 @@
 
     <modules>
         <module>commons-set-trie-core</module>
-        <module>commons-set-trie-benchmark</module>
+        <module>commons-tagmap-benchmark</module>
     </modules>
 
     <properties>
