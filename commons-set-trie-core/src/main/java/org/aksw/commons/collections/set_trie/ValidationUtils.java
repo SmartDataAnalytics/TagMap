@@ -11,8 +11,8 @@ public class ValidationUtils
     public static <T> T createValidatingProxy(T delegate, T validate) {
         @SuppressWarnings("unchecked")
         T result = (T)Proxy.newProxyInstance(
-                FeatureMap.class.getClassLoader(),
-                new Class[] { FeatureMap.class },
+                TagMap.class.getClassLoader(),
+                new Class[] { TagMap.class },
                 new InvocationHandler() {
                     @Override
                     public Object invoke(Object o, Method m, Object[] args) throws Throwable {

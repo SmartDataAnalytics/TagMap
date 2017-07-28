@@ -17,17 +17,17 @@ import com.google.common.collect.ForwardingMap;
  * @param <K>
  * @param <V>
  */
-public class FeatureMapSimple<K, V>
+public class TagMapSimple<K, V>
     extends ForwardingMap<K, Set<V>>
-    implements FeatureMap<K, V>
+    implements TagMap<K, V>
 {
     protected Map<K, Set<V>> map;
 
-    public FeatureMapSimple() {
+    public TagMapSimple() {
         this(new HashMap<>());
     }
 
-    public FeatureMapSimple(Map<K, Set<V>> map) {
+    public TagMapSimple(Map<K, Set<V>> map) {
         super();
         this.map = map;
     }
@@ -38,22 +38,22 @@ public class FeatureMapSimple<K, V>
     }
 
     @Override
-    public FeatureMap<K, V> getAllSubsetsOf(Collection<?> set) {
+    public TagMap<K, V> getAllSubsetsOf(Collection<?> set, boolean strict) {
         Map<K, Set<V>> resultMap = delegate().entrySet().stream()
             .filter(e -> set.containsAll(e.getValue()))
             .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
-        FeatureMap<K, V> result = new FeatureMapSimple<>(resultMap);
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
         return result;
     }
 
     @Override
-    public FeatureMap<K, V> getAllSupersetsOf(Collection<?> set) {
+    public TagMap<K, V> getAllSupersetsOf(Collection<?> set, boolean strict) {
         Map<K, Set<V>> resultMap = delegate().entrySet().stream()
                 .filter(e -> e.getValue().containsAll(set))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
-        FeatureMap<K, V> result = new FeatureMapSimple<>(resultMap);
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
         return result;
     }
 }

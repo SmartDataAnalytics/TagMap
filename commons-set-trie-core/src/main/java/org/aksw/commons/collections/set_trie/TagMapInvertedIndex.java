@@ -4,7 +4,6 @@ import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -13,9 +12,9 @@ import java.util.stream.Stream;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-public class FeatureMapInvertedIndex<V, K>
+public class TagMapInvertedIndex<V, K>
     extends AbstractMap<K, Set<V>>
-    implements FeatureMap<K, V>
+    implements TagMap<K, V>
 {
 
     protected Map<V, Integer> tagToCount;
@@ -40,7 +39,7 @@ public class FeatureMapInvertedIndex<V, K>
 //        this.tagSetToValues = tagSetToValues;
 //        this.valueToTagSets = valueToTagSets;
 //    }
-    public FeatureMapInvertedIndex() {
+    public TagMapInvertedIndex() {
         super();
         this.tagToCount = new HashMap<>();
         this.tagToTagSets = HashMultimap.create();
@@ -65,6 +64,10 @@ public class FeatureMapInvertedIndex<V, K>
         Set<Entry<K, Set<V>>> result = keyToTagSet.entrySet();
         return result;
     };
+
+//    public Set<V> put(K key, Collection<?> tagSet) {
+//
+//    }
 
     @Override
     public Set<V> put(K key, Set<V> tagSet) {
@@ -101,7 +104,7 @@ public class FeatureMapInvertedIndex<V, K>
      *
      */
     @Override
-    public FeatureMap<K, V> getAllSupersetsOf(Collection<?> prototype) {
+    public TagMap<K, V> getAllSupersetsOf(Collection<?> prototype, boolean strict) {
         //Set<Entry<Set<K>, Set<V>>> result;
 
         Object leastUsedTag = prototype
@@ -145,7 +148,7 @@ public class FeatureMapInvertedIndex<V, K>
 //                });
 
         Map<K, Set<V>> resultMap = baseStream.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-        FeatureMap<K, V> result = new FeatureMapSimple<>(resultMap);
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
 
         //Collection<Entry<Set<V>, K>> result = baseStream.collect(Collectors.toList());
         return result;
@@ -153,7 +156,7 @@ public class FeatureMapInvertedIndex<V, K>
 
 
     @Override
-    public FeatureMap<K, V> getAllSubsetsOf(Collection<?> prototype) {
+    public TagMap<K, V> getAllSubsetsOf(Collection<?> prototype, boolean strict) {
         // get the count if we used index lookup
         int indexCount = prototype.isEmpty() ? Integer.MAX_VALUE : prototype.stream().mapToInt(tag -> tagToCount.getOrDefault(tag, 0)).sum();
         int totalCount = keyToTagSet.size();
@@ -184,7 +187,7 @@ public class FeatureMapInvertedIndex<V, K>
             });
 
         Map<K, Set<V>> resultMap = baseStream.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
-        FeatureMap<K, V> result = new FeatureMapSimple<>(resultMap);
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
 
         return result;
     }

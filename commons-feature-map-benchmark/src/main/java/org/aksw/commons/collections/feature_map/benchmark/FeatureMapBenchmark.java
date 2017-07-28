@@ -18,9 +18,9 @@ import org.aksw.beast.vocabs.CV;
 import org.aksw.beast.vocabs.IV;
 import org.aksw.beast.vocabs.OWLTIME;
 import org.aksw.beast.vocabs.QB;
-import org.aksw.commons.collections.set_trie.FeatureMap;
-import org.aksw.commons.collections.set_trie.FeatureMapSetTrie;
-import org.aksw.commons.collections.set_trie.FeatureMapSimple;
+import org.aksw.commons.collections.set_trie.TagMap;
+import org.aksw.commons.collections.set_trie.TagMapSetTrie;
+import org.aksw.commons.collections.set_trie.TagMapSimple;
 import org.aksw.iguana.vocab.IguanaVocab;
 import org.aksw.simba.lsq.vocab.LSQ;
 import org.apache.jena.rdf.model.Model;
@@ -59,7 +59,7 @@ public class FeatureMapBenchmark {
         Resource Workload = ResourceFactory.createResource("http://example.org/ontology/Workload");
 
 
-        FeatureMap<String, Integer> featureMap = new FeatureMapSetTrie<>();
+        TagMap<String, Integer> featureMap = new TagMapSetTrie<>();
         // Create the dataset
         Random rand = new Random(0);
         IntStream.range(0, 1000).forEach(i -> featureMap.put("item" + i, createWorkload(rand)));

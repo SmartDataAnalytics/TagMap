@@ -15,12 +15,12 @@ public class SetTrieTests {
     // TODO Add the InvertedIndex implementation for comparison
     @Test
     public void testSetTrieCorrectnessByComparison() {
-        FeatureMap<String, Integer> simpleFm = new FeatureMapSimple<>();
-        FeatureMap<String, Integer> setTrieFm = new FeatureMapSetTrie<>();
-        FeatureMap<String, Integer> invertedListFm = new FeatureMapInvertedIndex<>();
+        TagMap<String, Integer> simpleFm = new TagMapSimple<>();
+        TagMap<String, Integer> setTrieFm = new TagMapSetTrie<>();
+        TagMap<String, Integer> invertedListFm = new TagMapInvertedIndex<>();
 
 
-        FeatureMap<String, Integer> fm = ValidationUtils.createValidatingProxy(setTrieFm, simpleFm);
+        TagMap<String, Integer> fm = ValidationUtils.createValidatingProxy(setTrieFm, simpleFm);
         //new FeatureMapValidating<>(setTrieFm, simpleFm);
 
 

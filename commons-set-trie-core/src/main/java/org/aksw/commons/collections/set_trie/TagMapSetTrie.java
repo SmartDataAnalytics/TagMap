@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class FeatureMapSetTrie<K, V>
+public class TagMapSetTrie<K, V>
     extends AbstractMap<K, Set<V>>
-    implements FeatureMap<K, V>
+    implements TagMap<K, V>
 {
     protected SetTrie<K, V> setTrie = new SetTrie<K, V>();
 
@@ -26,17 +26,17 @@ public class FeatureMapSetTrie<K, V>
 
 
     @Override
-    public FeatureMap<K, V> getAllSubsetsOf(Collection<?> set) {
+    public TagMap<K, V> getAllSubsetsOf(Collection<?> set, boolean strict) {
         Map<K, Set<V>> resultMap = setTrie.getAllSubsetsOf(set);
-        FeatureMap<K, V> result = new FeatureMapSimple<>(resultMap);
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
         return result;
     }
 
 
     @Override
-    public FeatureMap<K, V> getAllSupersetsOf(Collection<?> set) {
+    public TagMap<K, V> getAllSupersetsOf(Collection<?> set, boolean strict) {
         Map<K, Set<V>> resultMap = setTrie.getAllSupersetsOf(set);
-        FeatureMap<K, V> result = new FeatureMapSimple<>(resultMap);
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
         return result;
     }
 
