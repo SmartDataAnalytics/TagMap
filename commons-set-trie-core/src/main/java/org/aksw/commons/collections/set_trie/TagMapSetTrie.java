@@ -2,6 +2,7 @@ package org.aksw.commons.collections.set_trie;
 
 import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,11 +18,16 @@ public class TagMapSetTrie<K, V>
         return result;
     }
 
+    @Override
+    public Set<V> remove(Object key) {
+        Set<V> result = setTrie.remove(key);
+        return result;
+    }
 
     @Override
     public Set<Entry<K, Set<V>>> entrySet() {
-        // TODO Auto-generated method stub
-        return null;
+        Map<K, Set<V>> tmp = Collections.unmodifiableMap(setTrie.getAllSubsetsOf(Collections.<V>emptySet()));
+        return tmp.entrySet();
     }
 
 
