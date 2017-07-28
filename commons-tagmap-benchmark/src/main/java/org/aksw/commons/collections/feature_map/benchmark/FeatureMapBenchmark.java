@@ -164,14 +164,11 @@ public class FeatureMapBenchmark {
 
         List<Resource> avgs =
         RdfGroupBy.enh()
-            //.on(IguanaVocab.workload)
             .on(IV.job) // This is just the local name of the workload
-            //.on(IV.method)
             .agg(RDFS.label, OWLTIME.numericDuration, AggSum.class) // total time
             .agg(CV.value, OWLTIME.numericDuration, AggAvg.class)
             .agg(CV.stDev, OWLTIME.numericDuration, AccStatStdDevPopulation.class)
             .apply(observations.stream())
-            //.map(g -> g.rename("http://ex.org/avg/query{0}-user{1}", IV.job, IV.thread, IV.thread))
             .map(g -> g.rename("http://ex.org/avg/{0}", IV.job))
             .collect(Collectors.toList());
 
