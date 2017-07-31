@@ -3,6 +3,7 @@ package org.aksw.commons.collections.set_trie;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,7 +11,16 @@ public class TagMapSetTrie<K, V>
     extends AbstractMap<K, Set<V>>
     implements TagMap<K, V>
 {
-    protected SetTrie<K, V> setTrie = new SetTrie<K, V>();
+    protected SetTrie<K, V> setTrie;
+
+    public TagMapSetTrie() {
+        this(null);
+    }
+
+    public TagMapSetTrie(Comparator<? super V> comparator) {
+        super();
+        setTrie = new SetTrie<K, V>(comparator);
+    }
 
     @Override
     public Set<V> put(K key, Set<V> set) {

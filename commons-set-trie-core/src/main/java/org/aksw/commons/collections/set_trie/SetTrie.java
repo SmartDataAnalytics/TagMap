@@ -74,6 +74,10 @@ public class SetTrie<K, V> {
     // Root node of the trie datastructure
     protected SetTrieNode superRootNode = new SetTrieNode(nextId++, null, null);
 
+    public SetTrie(Comparator<? super V> comparator) {
+        super();
+        this.comparator = comparator;
+    }
 
     // TODO We may want to allow views on the Trie
     // HashSet (using a HashMap for self-containedness of the implementation) of current root nodes
@@ -83,7 +87,7 @@ public class SetTrie<K, V> {
         // Remove any possibly existing prior association with the key
         Set<V> result = remove(key);
 
-        // Note: The second argument (true) does not matter as there cannot be any type errors
+        // Note: The second argument is effectless, as we cannot encounter item type errors here
         NavigableSet<V> navSet = createNavigableSet(set, true);
         Iterator<V> it = navSet.iterator();
 
@@ -95,7 +99,7 @@ public class SetTrie<K, V> {
             if(nextNode == null) {
                 nextNode = new SetTrieNode(nextId++, currentNode, v);
                 if(currentNode.nextValueToChild == null) {
-                    currentNode.nextValueToChild = new TreeMap<>();
+                    currentNode.nextValueToChild = new TreeMap<>(comparator);
                 }
                 currentNode.nextValueToChild.put(v, nextNode);
             }
@@ -141,19 +145,24 @@ public class SetTrie<K, V> {
         return result;
     }
 
-    public NavigableSet<V> createNavigableSet(Collection<?> set, boolean skipTypeErrors) {
+    @SuppressWarnings("unchecked")
+    public NavigableSet<V> createNavigableSet(Collection<?> set, boolean skipItemTypeErrors) {
         NavigableSet<V> result = new TreeSet<V>(comparator);
 
         for(Object o : set) {
+            V v;
             try {
-                V v = (V)o;
-                result.add(v);
+                v = (V)o;
             } catch(Exception e) {
-                if(!skipTypeErrors) {
+                if(!skipItemTypeErrors) {
                     result = null;
                     break;
+                } else {
+                    continue;
                 }
             }
+            // Note: We can still encounter exceptions such as caused by the comparator
+            result.add(v);
         }
 
         return result;
