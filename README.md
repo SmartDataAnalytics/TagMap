@@ -1,5 +1,6 @@
-# SetTrie
-An Implementation of an Index Data Structure for Fast Subset and Superset Queries (based on the paper by Iztok Savnik)
+# TagMap
+This repository features an extension of the `java.util.Map<K, Set<T>>` interface for supporting subset and superset queries over sets of tags associated with keys.
+Most prominently, an implementation based on the Set Trie datastructure is provided, which is an Index Data Structure for Fast Subset and Superset Queries based on the paper by Iztok Savnik.
 
 
 ## Maven dependency
@@ -8,8 +9,8 @@ The artifact is published on [Maven Central](http://search.maven.org/#search%7Cg
 ```xml
 <dependency>
     <groupId>org.aksw.commons</groupId>
-    <artifactId>commons-set-trie-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>tagmap-core</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
 
