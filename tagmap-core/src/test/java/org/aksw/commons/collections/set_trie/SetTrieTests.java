@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.aksw.commons.collections.tagmap.TagMap;
-import org.aksw.commons.collections.tagmap.TagMapInvertedIndex;
 import org.aksw.commons.collections.tagmap.TagMapSetTrie;
 import org.aksw.commons.collections.tagmap.TagMapSimple;
 import org.aksw.commons.collections.tagmap.ValidationUtils;
@@ -22,7 +21,7 @@ public class SetTrieTests {
     public void testSetTrieCorrectnessByComparison() {
         TagMap<String, Integer> simpleFm = new TagMapSimple<>();
         TagMap<String, Integer> setTrieFm = new TagMapSetTrie<>();
-        TagMap<String, Integer> invertedListFm = new TagMapInvertedIndex<>();
+        //TagMap<String, Integer> invertedListFm = new TagMapInvertedIndex<>();
 
 
         TagMap<String, Integer> fm = ValidationUtils.createValidatingProxy(setTrieFm, simpleFm);

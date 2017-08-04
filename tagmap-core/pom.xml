@@ -8,7 +8,7 @@
 
     <parent>
         <groupId>org.aksw.commons</groupId>
-        <artifactId>commons-set-trie-parent</artifactId>
+        <artifactId>tagmap-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
