@@ -4,7 +4,7 @@
 
     <groupId>org.aksw.commons</groupId>
     <artifactId>tagmap-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -27,7 +27,7 @@
         <url>https://github.com/AKSW/SetTrie</url>
         <connection>scm:git:git://github.com/AKSW/SetTrie.git</connection>
         <developerConnection>scm:git:git@github.com:AKSW/SetTrie.git</developerConnection>
-      <tag>tagmap-parent-1.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <developers>
