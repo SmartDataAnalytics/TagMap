@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
 
     <description>An Index Data Structure for Fast Subset and Superset Queries</description>
+    <url>https://github.com/AKSW/TagMap</url>
 
     <issueManagement>
         <url>https://github.com/AKSW/SetTrie/issues</url>
