@@ -60,4 +60,11 @@ public class TagMapSetTrie<K, V>
         return result;
     }
 
+    @Override
+    public TagMap<K, V> getAllEquisetsOf(Collection<?> set) {
+        Map<K, Set<V>> resultMap = setTrie.getAllEquisetsOf(set);
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
+        return result;
+    }
+
 }

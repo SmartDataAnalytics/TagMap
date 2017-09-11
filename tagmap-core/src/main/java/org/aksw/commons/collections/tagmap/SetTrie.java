@@ -221,6 +221,21 @@ public class SetTrie<K, V> {
 
 
     public Map<K, Set<V>> getAllSupersetsOf(Collection<?> set) {
+        Map<K, Set<V>> result = coreGetAllSupersetsOf(set, 1);
+        return result;
+    }
+
+    /**
+     * mode:
+     *  0: equivalence only
+     *  1: supersets (equivalence + strict supersets)
+     *  2: strict supersets
+     *
+     * @param set
+     * @param mode
+     * @return
+     */
+    public Map<K, Set<V>> coreGetAllSupersetsOf(Collection<?> set, int mode) {
         // Skip elements in the collection having an incorrect type, as we are looking for subsets which simply
         // cannot contain the conflicting items
         Set<V> navSet = createNavigableSet(set, true);
@@ -273,19 +288,27 @@ public class SetTrie<K, V> {
         Map<K, Set<V>> result = new HashMap<>();
 
         // Copy all data entries associated with the frontier to the result
-        frontier.stream()
-            .flatMap(node -> reachableNodesAcyclic(
+        Stream<SetTrie<K, V>.SetTrieNode> stream = frontier.stream();
+
+        if(mode != 0) {
+            stream = stream.flatMap(node -> reachableNodesAcyclic(
                         node,
-                        x -> (x.nextValueToChild != null ? x.nextValueToChild.values() : Collections.<SetTrieNode>emptySet()).stream()))
-            .forEach(currentNode -> {
-                if(currentNode.keyToSet != null) {
-                    for(Entry<K, NavigableSet<V>> e : currentNode.keyToSet.entrySet()) {
-                        result.put(e.getKey(), e.getValue());
-                    }
+                        x -> (x.nextValueToChild != null ? x.nextValueToChild.values() : Collections.<SetTrieNode>emptySet()).stream()));
+        }
+
+        stream.forEach(currentNode -> {
+            if(currentNode.keyToSet != null) {
+                for(Entry<K, NavigableSet<V>> e : currentNode.keyToSet.entrySet()) {
+                    result.put(e.getKey(), e.getValue());
                 }
-            });
+            }
+        });
 
+        return result;
+    }
 
+    public Map<K, Set<V>> getAllEquisetsOf(Collection<?> prototype) {
+        Map<K, Set<V>> result = coreGetAllSupersetsOf(prototype, 0);
         return result;
     }
 
