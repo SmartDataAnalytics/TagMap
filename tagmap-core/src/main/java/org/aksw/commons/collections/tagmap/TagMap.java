@@ -32,4 +32,11 @@ public interface TagMap<K, V>
     TagMap<K, V> getAllSupersetsOf(Collection<?> tags, boolean strict);
 
 
+    /**
+     * equisets: short term for equivalent sets
+     *
+     * @param tags
+     * @return
+     */
+    TagMap<K, V> getAllEquisetsOf(Collection<?> tags);
 }

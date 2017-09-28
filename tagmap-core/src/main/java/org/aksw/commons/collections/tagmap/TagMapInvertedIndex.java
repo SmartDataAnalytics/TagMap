@@ -4,8 +4,10 @@ import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,13 +100,8 @@ public class TagMapInvertedIndex<V, K>
         return result;
     }
 
-    /**
-     * Return every entry of this featureMap whose associated feature set
-     * is a super set of the given one.
-     *
-     */
-    @Override
-    public TagMap<K, V> getAllSupersetsOf(Collection<?> prototype, boolean strict) {
+
+    protected TagMap<K, V> getByLeastUsedTagAndPredicate(Collection<?> prototype, Predicate<Set<V>> tagSetPredicate) {
         //Set<Entry<Set<K>, Set<V>>> result;
 
         Object leastUsedTag = prototype
@@ -120,7 +117,7 @@ public class TagMapInvertedIndex<V, K>
             Collection<Set<V>> rawTagSets = tagToTagSets.asMap().get(leastUsedTag);
             baseStream = rawTagSets
                     .stream()
-                    .filter(tagSet -> tagSet.containsAll(prototype))
+                    .filter(tagSet -> tagSetPredicate.test(tagSet)) //tagSet.containsAll(prototype))
                     .flatMap(tagSet -> {
                         Collection<K> v = tagSetToKeys.get(tagSet);
 
@@ -151,6 +148,18 @@ public class TagMapInvertedIndex<V, K>
         TagMap<K, V> result = new TagMapSimple<>(resultMap);
 
         //Collection<Entry<Set<V>, K>> result = baseStream.collect(Collectors.toList());
+        return result;
+    }
+
+    /**
+     * Return every entry of this featureMap whose associated feature set
+     * is a super set of the given one.
+     *
+     */
+    @Override
+    public TagMap<K, V> getAllSupersetsOf(Collection<?> prototype, boolean strict) {
+        TagMap<K, V> result = getByLeastUsedTagAndPredicate(prototype, (tagSet) -> tagSet.containsAll(prototype));
+
         return result;
     }
 
@@ -188,6 +197,15 @@ public class TagMapInvertedIndex<V, K>
 
         Map<K, Set<V>> resultMap = baseStream.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         TagMap<K, V> result = new TagMapSimple<>(resultMap);
+
+        return result;
+    }
+
+
+    @Override
+    public TagMap<K, V> getAllEquisetsOf(Collection<?> prototype) {
+        Set<Object> tmp = new HashSet<>(prototype);
+        TagMap<K, V> result = getByLeastUsedTagAndPredicate(prototype, (tagSet) -> tagSet.size() == tmp.size() && tagSet.containsAll(tmp));
 
         return result;
     }
