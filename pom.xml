@@ -10,10 +10,10 @@
 
     <name>TagMap</name>
     <description>An Index Data Structure for Fast Subset and Superset Queries</description>
-    <url>https://github.com/AKSW/TagMap</url>
+    <url>https://github.com/SmartDataAnalytics/TagMap</url>
 
     <issueManagement>
-        <url>https://github.com/AKSW/TagMap/issues</url>
+        <url>https://github.com/SmartDataAnalytics/TagMap/issues</url>
         <system>GitHub Issue Management</system>
     </issueManagement>
 
@@ -26,9 +26,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/AKSW/TagMap</url>
-        <connection>scm:git:git://github.com/AKSW/TagMap.git</connection>
-        <developerConnection>scm:git:git@github.com:AKSW/TagMap.git</developerConnection>
+        <url>https://github.com/SmartDataAnalytics/TagMap</url>
+        <connection>scm:git:git://github.com/SmartDataAnalytics/TagMap.git</connection>
+        <developerConnection>scm:git:git@github.com:SmartDataAnalytics/TagMap.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
 
