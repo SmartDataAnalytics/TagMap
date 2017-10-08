@@ -81,6 +81,7 @@ public class SetTrie<K, V> {
 
     public void clear() {
         keyToNode.clear();
+        superRootNode.keyToSet = null; //.clear();
         superRootNode.nextValueToChild = null;
     }
 

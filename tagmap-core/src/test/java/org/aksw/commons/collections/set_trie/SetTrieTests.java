@@ -24,7 +24,7 @@ public class SetTrieTests {
         //TagMap<String, Integer> invertedListFm = new TagMapInvertedIndex<>();
 
 
-        TagMap<String, Integer> fm = ValidationUtils.createValidatingProxy(setTrieFm, simpleFm);
+        TagMap<String, Integer> fm = ValidationUtils.createValidatingProxy(TagMap.class, setTrieFm, simpleFm);
         //new FeatureMapValidating<>(setTrieFm, simpleFm);
 
 
