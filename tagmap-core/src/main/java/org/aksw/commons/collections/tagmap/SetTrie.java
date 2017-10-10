@@ -128,7 +128,7 @@ public class SetTrie<K, V> {
 
         SetTrieNode currentNode = keyToNode.get(key);
 
-        if(currentNode != null) {
+        if(currentNode != null && currentNode.keyToSet != null) {
             result = currentNode.keyToSet.remove(key);
             if(currentNode.keyToSet.isEmpty()) {
                 currentNode.keyToSet = null;
