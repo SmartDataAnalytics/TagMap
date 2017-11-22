@@ -4,6 +4,7 @@
 .settings
 target
 
+release.properties
 pom.xml.versionBackup
 
 deptree.txt

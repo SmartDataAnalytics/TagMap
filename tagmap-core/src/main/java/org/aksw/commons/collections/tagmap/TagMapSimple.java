@@ -56,4 +56,14 @@ public class TagMapSimple<K, V>
         TagMap<K, V> result = new TagMapSimple<>(resultMap);
         return result;
     }
+
+    @Override
+    public TagMap<K, V> getAllEquisetsOf(Collection<?> set) {
+        Map<K, Set<V>> resultMap = delegate().entrySet().stream()
+            .filter(e -> set.equals(e.getValue()))
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+        TagMap<K, V> result = new TagMapSimple<>(resultMap);
+        return result;
+    }
 }

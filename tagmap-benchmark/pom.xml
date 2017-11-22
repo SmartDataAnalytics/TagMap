@@ -14,18 +14,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.aksw.commons</groupId>
-            <artifactId>tagmap-core</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.aksw.beast</groupId>
             <artifactId>beast-core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.aksw.beast</groupId>
             <artifactId>beast-benchmark</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aksw.commons</groupId>
+            <artifactId>tagmap-core</artifactId>
         </dependency>
 
         <dependency>
@@ -44,5 +46,17 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
