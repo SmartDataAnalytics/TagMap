@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.aksw.commons</groupId>
         <artifactId>tagmap-parent</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.3</version>
     </parent>
 
     <dependencies>
