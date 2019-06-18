@@ -40,7 +40,7 @@ public class TagMapSimple<K, V>
     @Override
     public TagMap<K, V> getAllSubsetsOf(Collection<?> set, boolean strict) {
         Map<K, Set<V>> resultMap = delegate().entrySet().stream()
-            .filter(e -> set.containsAll(e.getValue()))
+            .filter(e -> set.containsAll(e.getValue()) && !(strict && set.equals(e.getValue())))
             .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
         TagMap<K, V> result = new TagMapSimple<>(resultMap);
@@ -50,7 +50,7 @@ public class TagMapSimple<K, V>
     @Override
     public TagMap<K, V> getAllSupersetsOf(Collection<?> set, boolean strict) {
         Map<K, Set<V>> resultMap = delegate().entrySet().stream()
-                .filter(e -> e.getValue().containsAll(set))
+                .filter(e -> e.getValue().containsAll(set)  && !(strict && set.equals(e.getValue())))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 
         TagMap<K, V> result = new TagMapSimple<>(resultMap);
