@@ -4,7 +4,7 @@
 
     <groupId>org.aksw.commons</groupId>
     <artifactId>tagmap-parent</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 
     <packaging>pom</packaging>
 
@@ -72,11 +72,11 @@
                 <version>28.0-jre</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.10</version>
-            </dependency>
+<!--             <dependency> -->
+<!--                 <groupId>org.slf4j</groupId> -->
+<!--                 <artifactId>slf4j-log4j12</artifactId> -->
+<!--                 <version>1.7.10</version> -->
+<!--             </dependency> -->
 
             <dependency>
                 <groupId>junit</groupId>
@@ -360,7 +360,7 @@
         <snapshotRepository>
             <id>maven.aksw.snapshots</id>
             <name>AKSW Snapshot Repository</name>
-            <url>http://maven.aksw.org/archiva/repository/snapshots</url>
+            <url>https://maven.aksw.org/archiva/repository/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -368,7 +368,7 @@
         <repository>
             <id>maven.aksw.snapshots</id>
             <name>AKSW Snapshot Repository</name>
-            <url>http://maven.aksw.org/archiva/repository/snapshots</url>
+            <url>https://maven.aksw.org/archiva/repository/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
